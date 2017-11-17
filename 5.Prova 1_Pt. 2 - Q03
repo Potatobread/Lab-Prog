@@ -1,0 +1,101 @@
+#include <stdio.h>
+#include <string.h>
+
+typedef struct{
+	char nome[10];
+	float dist;
+	int acesso;
+}tHotel;
+
+void cadastrar(tHotel* h, int T){
+	static int i = 1;
+	char nome[10];
+	int controle = 0,j;
+	
+	printf("HOTEL %d\n", i);
+	printf("Nome: ");
+	scanf("%s", nome);
+	for(j=0;j<T;j++){
+		if(strcmp(h[j].nome,nome)==0)
+			controle = 1; 
+	}
+	if(controle == 1){
+		printf("Hotel ja cadastrado.\n\n");
+		return;
+	}
+	else{
+		strcpy(h[i-1].nome,nome);
+	}	
+	printf("Distancia do Centro (km): ");
+	scanf("%f", &h[i-1].dist);
+	printf("Acesso (0-nao asfaltado; 1-asfaltado): ");
+	scanf("%d", &h[i-1].acesso);
+	printf("\n\n");
+	i++;
+}
+
+int distanciaCentro(tHotel h[],int T){
+	int i,total=0;
+	
+	for(i=0;i<T;i++){
+		if(h[i].dist < 15)
+			total++;
+	}
+	return total;
+}
+
+void consultar(tHotel h[],int T){
+	int i;
+	char nome[10];
+	
+	printf("Pesquisar pelo hotel: ");
+	scanf("%s", nome);
+	for(i=0;i<T;i++){
+		if(strcmp(h[i].nome,nome)==0){
+			printf("Distancia do Centro (km): %.1f\n", h[i].dist);
+			if(h[i].acesso == 1)
+				printf("Acesso asfaltado\n\n\n");
+			else
+				printf("Acesso nao asfaltado\n\n\n");
+		}
+	}	
+}
+
+void menu(){
+	int resp,total,T;
+	
+	printf("Informe o numero de Hoteis: ");
+	scanf("%d", &T);
+	tHotel hotel[T];
+	
+	printf("\n1-Cadastrar\n2-Informar hoteis que distam < 15km ate o centro\n3-Consultar\n0-Sair\n");
+	printf("Escolha uma opcao: ");
+	scanf("%d", &resp);
+	while(resp != 0){
+		switch(resp){
+			case 0:
+				return;
+			case 1:
+				cadastrar(&hotel[0],T);
+				break;
+			case 2:
+				total = distanciaCentro(hotel,T);
+				printf("\nNumero de Hoteis que distanciam < de 15 km do centro: %d\n\n\n",total);
+				break;
+			case 3:
+				consultar(hotel,T);
+				break;	
+			default:
+				printf("Opcao Invalida\n\n");
+				break;
+		}
+		printf("1-Cadastrar\n2-Informar hoteis que distam < 15km ate o centro\n3-Consultar\n0-Sair\n");
+		printf("Escolha uma opcao: ");
+		scanf("%d", &resp);
+	}	
+}
+
+int main(){
+	menu();
+	return 0;
+}
