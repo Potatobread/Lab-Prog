@@ -1,0 +1,68 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int main(){
+	char arq[15];
+	int v,cand1=0,cand2=0,cand3=0,cand4=0,nulo=0,branco=0,total = 0,validos;
+	float porcen;
+		
+	printf("Digite o nome do Arquivo: ");
+	scanf(" %s", arq);
+	FILE* arquivo = fopen(arq, "r");
+	
+	if(arquivo == NULL){
+		printf("Erro na abertura do Arquivo.\n");
+		exit(1);
+	}
+	else{
+		while(!feof(arquivo)){
+			fscanf(arquivo,"%d", &v);
+			switch(v){
+				case 1:
+					cand1++;
+					break;
+				case 2:
+					cand2++;
+					break;
+				case 3:
+					cand3++;
+					break;
+				case 4:
+					cand4++;
+					break;
+				case 5:
+					nulo++;
+					break;
+				case 6:
+					branco++;
+					break;	
+				default:
+					break;
+			}
+			total++;
+		}
+	}
+	printf("\nTotal de Votos:\n");
+	printf("   Candidato 1: %d\n", cand1);
+	printf("   Candidato 2: %d\n", cand2);
+	printf("   Candidato 3: %d\n", cand3);
+	printf("   Candidato 4: %d\n", cand4);
+	printf("   Nulos: %d\n", nulo);
+	printf("   Brancos: %d\n\n", branco);
+	
+	validos = cand1+cand2+cand3+cand4;
+	porcen = (100*cand1)/validos;
+	printf("\nPorcentagem de Votos Validos para o Candidato 1: %.1f%%\n\n",porcen);
+	porcen = (100*cand2)/validos;
+	printf("Porcentagem de Votos Validos para o Candidato 2: %.1f%%\n\n",porcen);
+	porcen = (100*cand3)/validos;
+	printf("Porcentagem de Votos Validos para o Candidato 3: %.1f%%\n\n",porcen);
+	porcen = (100*cand4)/validos;
+	printf("Porcentagem de Votos Validos para o Candidato 4: %.1f%%\n\n",porcen);
+	porcen = (100*nulo)/total;
+	printf("Porcentagem de Votos Nulos sobre o Total: %.1f%%\n\n",porcen);
+	porcen = (100*branco)/total;
+	printf("Porcentagem de Votos Brancos sobre o Total: %.1f%%\n",porcen);
+	 
+	return 0;
+}
