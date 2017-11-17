@@ -1,0 +1,309 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <math.h>
+
+int contaDigitos(int valor){
+	int conta=0;
+	
+	while(valor != 0){
+		conta++;
+        valor = valor / 10;
+	}
+	
+	return conta;
+}
+
+int transformaBinario(int decimal){
+	long int resto=0,multiplica_dez=1,binario=0,aux;
+	
+	while(decimal >= 1){
+		resto = decimal % 2;
+		aux = multiplica_dez * resto;
+		binario += aux;
+		multiplica_dez *= 10;
+		decimal = decimal / 2;
+	}
+	
+	return binario; 
+}
+
+int transformaOctal(int decimal){
+	int i=0,j,divisor,verificador,multiplica_dez=10,resto,aux,octal=0;
+	
+	while(decimal > verificador){
+		verificador = pow(8,i);
+		i++;
+	}
+	i -= 2;
+	for(j=i-1;j>0;j--)
+		multiplica_dez *= 10;
+	
+	while(i >= 0){
+		divisor = pow(8,i);
+		resto = decimal / divisor;
+		aux = multiplica_dez * resto;
+		octal += aux;
+		multiplica_dez /= 10;
+		divisor *= resto;
+		decimal -= divisor;
+		i--; 
+	}
+	
+	return octal;
+}
+
+int transformaDecimal(int valor,int base){
+	int decimal=0,i,multiplica,quant,divide_dez = 10,modulo;
+	
+	switch(base){
+		case 2:
+			quant = contaDigitos(valor);
+			for(i=0;i<quant;i++){
+				multiplica = pow(2,i);
+				modulo = (valor % divide_dez)/(divide_dez/10);
+				divide_dez *= 10;
+				decimal += modulo * multiplica;
+			}
+			break;
+		case 8:
+			quant = contaDigitos(valor);
+			for(i=0;i<quant;i++){
+				multiplica = pow(8,i);
+				modulo = (valor % divide_dez)/(divide_dez/10);
+				divide_dez *= 10;
+				decimal += modulo * multiplica;
+			}	
+			break;
+		default:
+			break;
+	}
+	
+	return decimal;
+}
+
+int decimalHexadecimal(char *valor){
+	int i=0,j,multiplica,decimal=0,quant,aux;
+	
+	quant = strlen(valor);
+	for(i=0,j=quant-1;i < quant;i++,j--){
+		switch(valor[j]){
+			case 'A':
+				multiplica = pow(16,i);
+				aux = 10;
+				decimal += aux * multiplica;
+				break;
+			case 'B':
+				multiplica = pow(16,i);
+				aux = 11;
+				decimal += aux * multiplica;
+				break;
+			case 'C':
+				multiplica = pow(16,i);
+				aux = 12;
+				decimal += aux * multiplica;
+				break;
+			case 'D':
+				multiplica = pow(16,i);
+				aux = 13;
+				decimal += aux * multiplica;
+				break;
+			case 'E':
+				multiplica = pow(16,i);
+				aux = 14;
+				decimal += aux * multiplica;
+				break;
+			case 'F':
+				multiplica = pow(16,i);
+				aux = 15;
+				decimal += aux * multiplica;
+				break;
+			default:
+				multiplica = pow(16,i);
+				aux = atoi(valor[j]);
+				decimal += aux * multiplica;
+				break;
+		}
+	}
+	
+	return decimal;
+}
+
+int transformaHexadecimal(int decimal, char *hexa){
+	int i=0,j=0,divisor,verificador=0,resto;
+	
+	while(decimal > verificador){
+		verificador = pow(16,i);
+		i++;
+	}
+	i -= 2;
+	
+	while(i >= 0){
+		divisor = pow(16,i);
+		resto = decimal / divisor;
+		if(resto >= 10){
+			switch(resto){
+				case 10:
+					hexa[j] = 'A';
+					break;
+				case 11:
+					hexa[j] = 'B';
+					break;
+				case 12:
+					hexa[j] = 'C';
+					break;
+				case 13:
+					hexa[j] = 'D';
+					break;
+				case 14:
+					hexa[j] = 'E';
+					break;
+				case 15:
+					hexa[j] = 'F';
+					break;
+				default:
+					break;
+			}
+		}
+		else
+			hexa[j] = resto + '0';
+		divisor *= resto;
+		decimal -= divisor;
+		i--;
+		j++; 
+	}
+	
+	return j;
+}
+
+int main(){
+	char valor[10],hexadecimal[10],base;
+	int numero,decimal,binario,octal,a,i,j,controle=0;
+		
+	printf("Digite o Numero: ");
+	scanf("%s", valor);
+	printf("Base: ");
+	scanf(" %c", &base);
+	numero = atoi(valor);
+	while(numero != 0){
+		switch(base){
+			case 'B':
+				numero = atoi(valor);
+				decimal = transformaDecimal(numero,2);
+				binario = transformaBinario(decimal);
+				if(numero != binario){
+					printf("Base Errada\n");
+					printf("Digite novamente a Base: ");
+					scanf(" %c", &base);
+					controle = 1;
+					while(controle > 0){
+						printf("Base Errada\n");
+						printf("Digite novamente a Base: ");
+						scanf(" %c", &base);
+						if(base == 'B')
+							controle = 0;
+					}	
+				}
+				else{
+					printf("Binario: %d\n", numero);
+					octal = transformaOctal(decimal);
+					printf("Octal: %d\n", octal);
+					printf("Decimal: %d\n", decimal);
+					j = transformaHexadecimal(decimal,hexadecimal);
+					printf("Hexadecimal: ");
+					for(i=0;i<j;i++)
+						printf("%c", hexadecimal[i]);
+					printf("\n");					
+				}
+				break;
+			case 'O':
+				numero = atoi(valor);
+				decimal = transformaDecimal(numero,8);
+				octal = transformaOctal(decimal);
+				if(numero != octal){
+					printf("Base Errada\n");
+					printf("Digite novamente a Base: ");
+					scanf(" %c", &base);
+					if(base != 'O')
+						break;
+				}
+				else{
+					binario = transformaBinario(decimal);
+					printf("Binario: %d\n", binario);
+					printf("Octal: %d\n", octal);
+					printf("Decimal: %d\n", decimal);
+					j = transformaHexadecimal(decimal,hexadecimal);
+					printf("Hexadecimal: ");
+					for(i=0;i<j;i++)
+						printf("%c", hexadecimal[i]);
+					printf("\n");
+				}
+				break;
+			case 'D':
+				numero = atoi(valor);
+				binario = transformaBinario(numero);
+				decimal = transformaDecimal(binario,2);
+				if(numero != decimal){
+					printf("Base Errada\n");
+					printf("Digite novamente a Base: ");
+					scanf(" %c", &base);
+					if(base != 'D')
+						break;
+				}
+				else{
+					binario = transformaBinario(decimal);
+					printf("Binario: %d\n", decimal);
+					octal = transformaOctal(decimal);
+					printf("Octal: %d\n", octal);
+					printf("Decimal: %d\n", numero);
+					j = transformaHexadecimal(decimal,hexadecimal);
+					printf("Hexadecimal: ");
+					for(i=0;i<j;i++)
+						printf("%c", hexadecimal[i]);
+					printf("\n");
+				}
+				break;
+			case 'H':
+				decimal = decimalHexadecimal(valor);
+				j = transformaHexadecimal(decimal,hexadecimal);
+				for(i=0;i<j;i++)
+					if(valor[i] == hexadecimal[i])
+						a = 0;
+				if(a != 0){
+					printf("Base Errada\n");
+					printf("Digite novamente a Base: ");
+					scanf(" %c", &base);
+					if(base != 'H')
+						break;
+				}
+				else{
+					binario = transformaBinario(decimal);
+					printf("Binario: %d\n", binario);
+					octal = transformaOctal(decimal);
+					printf("Octal: %d\n", octal);
+					printf("Decimal: %d\n", decimal);
+					printf("Hexadecimal: ");
+					for(i=0;i<j;i++)
+						printf("%c", hexadecimal[i]);
+					printf("\n");
+				}
+				break;			
+			default:
+				controle = 1;
+				while(controle > 0){
+					printf("Base Errada\n");
+					printf("Digite novamente a Base: ");
+					scanf(" %c", &base);
+					if(base == 'B' || base == 'O' || base == 'D' || base == 'H')
+						controle = 0;
+				}
+		}
+		printf("\nDigite o Numero: ");
+		scanf("%s", valor);
+		printf("Base: ");
+		scanf(" %c", &base);
+		numero = atoi(valor);
+	}
+	
+	return 0;
+}
