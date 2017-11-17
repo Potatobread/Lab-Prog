@@ -1,0 +1,32 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+void criarCopia(char* nome){
+	FILE* original = fopen(nome,"r");
+	char aux;
+	
+	if(original == NULL){
+		printf("\nErro na abertura do Arquivo.\n");
+		exit(1);
+	}
+	else{
+		strcat(nome, ".cop");
+		FILE* copia = fopen(nome,"w");
+	   	while((aux = getc(original)) != EOF)
+   			putc(aux,copia);
+   		fclose(copia);
+	}
+	
+	fclose(original);
+}
+
+int main(){
+	char nome[15];
+	printf("Digite o nome do Arquivo: ");
+	scanf("%s", nome);
+	criarCopia(nome);
+	printf("\nCopia Realizada com Sucesso\n");
+	
+	return 0;
+}
