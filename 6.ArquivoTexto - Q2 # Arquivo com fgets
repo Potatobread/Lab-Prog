@@ -1,0 +1,85 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct{
+	char nome[80];
+	float media;
+}tAluno;
+
+int carregaQuantidade(char* arq){
+	FILE* arquivo = fopen(arq, "r");
+	int linha = 1,quant;
+	
+	if(arquivo == NULL){
+		printf("Erro na abertura do Arquivo.\n");
+	    exit(1);
+	}
+	else{
+		while((fscanf(arquivo,"%d", &quant))!= EOF){
+			if(linha == 1)
+				break;
+		}
+	}
+	
+	return quant;
+}
+
+void carregaConteudo(char* arq, tAluno* aluno){
+	FILE* arquivo = fopen(arq, "r");
+	char linha[20],nome[80];
+	int i,line,j;
+	float aux,media;	
+	
+	if(arquivo == NULL){
+		printf("Erro na abertura do Arquivo.\n");
+		exit(1);
+	}
+	else{
+		line = 1;
+		i = j = media = 0;
+		while(!feof(arquivo)){
+			if(line > 1){
+				if(j == 0){
+					fgets(nome,80,arquivo);
+					strcpy(aluno[i].nome,nome);					
+					j++;
+				}
+				else{
+					fgets(linha,20,arquivo);
+					aux = atof(linha);
+					media += aux;
+					j++;
+					if(j == 4){
+						j = 0;
+						media /= 3;
+						aluno[i].media = media;
+						media = 0;
+						i++;
+					}	
+				}	
+			}
+			else
+				fgets(linha,20,arquivo);
+			line++;
+		}
+	}
+}
+
+int main(){
+	char arq[15];
+	int n,i;	
+		
+	printf("Digite o nome do Arquivo: ");
+	scanf(" %s", arq);
+	n = carregaQuantidade(arq);
+	tAluno aluno[n];
+	carregaConteudo(arq,&aluno[0]);
+	printf("\n");
+	for(i=0;i<n;i++){
+		if(aluno[i].media > 7)
+			printf("Nome: %sMedia: %.1f\n\n", aluno[i].nome,aluno[i].media);
+	}	
+	
+	return 0;
+}
