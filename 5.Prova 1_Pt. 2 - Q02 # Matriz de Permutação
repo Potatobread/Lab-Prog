@@ -1,0 +1,40 @@
+#include <stdio.h>
+#define MAX 3
+
+int verificaPermutacao(int mat[][MAX]){
+	int i,j,resp,soma,cont=0;
+	
+	for(i=0;i<MAX;i++){
+		soma = 0;
+		for(j=0;j<MAX;j++){
+			soma += mat[i][j];
+		}
+		if(soma == 1)
+			cont++;
+	}
+	if(cont == MAX)
+		resp = 1;			   	
+	else
+		resp = 0;
+	
+	return resp; 
+}
+
+
+int main(){
+	int mat[MAX][MAX];
+	int i,j,permuta;
+	
+	printf("Digite os valores da Matriz:\n");
+	for(i=0;i<MAX;i++)
+		for(j=0;j<MAX;j++)
+			scanf("%d", &mat[i][j]);
+		
+	permuta = verificaPermutacao(mat);
+	if(permuta == 1)
+		printf("\nA Matriz eh de Permutacao.\n");
+	else
+		printf("\nA Matriz nao eh de Permutacao.\n");	
+	
+	return 0;
+}
