@@ -1,0 +1,43 @@
+#include <stdio.h>
+
+int n;
+
+void multVetorMatriz(int v[], int A[][n],int w[]){
+	int i,j,soma=0;
+	
+	for(i=0;i<n;i++){
+		for(j=0;j<n;j++){
+			soma += v[i] * A[j][i];
+		}
+		w[i] = soma;
+		soma = 0;
+	}
+	
+	printf("\nW: ");
+	for(i=0;i<n;i++)
+		printf("%d ", w[i]);
+	printf("\n");
+}
+
+int main(){
+	int i,j;
+	
+	printf("Digite a Ordem do Vetor e da Matriz: ");
+	scanf("%d", &n);
+	int v[n],A[n][n],w[n];
+	
+	printf("\nDigite os elementos do Vetor: ");
+	for(i=0;i<n;i++)
+		scanf("%d", &v[i]);
+	
+	printf("\nDigite os elementos da Matriz:\n");
+	for(i=0;i<n;i++){
+		for(j=0;j<n;j++){
+			scanf("%d", &A[i][j]);
+		}
+	}
+	
+	multVetorMatriz(v,A,w);
+	
+	return 0;
+}
