@@ -1,0 +1,28 @@
+#include <stdio.h>
+
+int raizQuadrada(int n){
+	int aux=1,cont=0;
+	
+	while(n > 0){
+		n -= aux;
+		aux += 2;
+		cont++;
+	}
+	
+	return cont;
+}
+
+int main(){
+	int x,resp;
+	
+	printf("Digite o numero: ");
+	scanf("%d", &x);
+	while(x >= 0){
+		resp = raizQuadrada(x);
+		printf("\nA Raiz Quadrada de %d eh %d\n\n",x,resp);
+		printf("Numero: ");
+		scanf("%d", &x);
+	}
+	
+	return 0;
+}
