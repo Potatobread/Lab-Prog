@@ -1,0 +1,56 @@
+#include <stdio.h>
+
+typedef struct{
+	int lugares;
+}tReserva;
+
+void fazReserva(tReserva* mesa, int i, int lugares){
+	mesa[i].lugares -= lugares;
+}
+
+int checaReserva(tReserva* mesa, int i, int lugares){
+	if(mesa[i].lugares < lugares){
+		printf("Nao foi possivel realizar sua reserva.\n");
+		printf("As mesas que possuem %d lugares disponiveis sao:\n", lugares);
+		for(i=0;i<30;i++){
+			if(mesa[i].lugares >= lugares){
+				if(i < 10)
+					printf("Mesa 10%d - Num de lugares livres: %d\n", i,mesa[i].lugares);
+				else
+					printf("Mesa 1%d - Num de lugares livres: %d\n", i,mesa[i].lugares);
+			}	
+		}
+		return 0;
+	}
+	else
+		return 1;
+}
+
+int main(){
+	tReserva mesa[30];
+	int i,codigo,lugares,aux;
+	
+	for(i=0;i<30;i++)
+		mesa[i].lugares = 5;
+	
+	printf("Entre com o codigo da mesa que deseja reservar (entre 100 e 129) ou 0 para terminar: ");
+	scanf("%d", &codigo);
+	while(codigo != 0){
+		printf("Entre com a quantidade de lugares que deseja: ");
+		scanf("%d", &lugares);
+		i = codigo % 100;
+		aux = checaReserva(&mesa[0],i,lugares);
+		if(aux != 0){
+			fazReserva(&mesa[0],i,lugares);
+			printf("Reserva Ok. Mesa %d, numero de cadeiras reservadas: %d.\n", codigo,lugares);
+			printf("Entre com o codigo da mesa que deseja reservar (entre 100 e 129) ou 0 para terminar: ");
+			scanf("%d", &codigo);
+		}
+		else{
+			printf("Entre com o codigo da mesa que deseja reservar (entre 100 e 129) ou 0 para terminar: ");
+			scanf("%d", &codigo);
+		}
+	}
+
+	return 0;
+}
