@@ -1,0 +1,75 @@
+#include <stdio.h>
+#define T 100
+
+typedef struct{
+	int codigo;
+	int assunto;
+	int estoque;
+}tLivro;
+
+int consulta_livro(int n, tLivro livros[], int cod){
+	int i;
+	
+	for(i=0;i<n;i++){
+		if(cod == livros[i].codigo)
+			return i;
+	}	
+	return -1;
+}
+
+void mostra_estoque(int n, tLivro livros[],int cod){
+	int i;
+	
+	i = consulta_livro(n,livros,cod);
+	if(i != -1)
+		printf("Quantidade do Livro em Estoque: %d\n", livros[i].estoque);
+	else
+		printf("Livro não cadastrado.\n");
+}
+
+void cadastrar_livros(tLivro* livros){
+	int i=0,cont=0,aux;
+	
+	printf("Cadastrar Livro (0 no Cod. - Sair):\nCodigo: ");
+	scanf("%d", &aux);
+	while(aux != 0){
+		livros[i].codigo = aux;
+		printf("Assunto: ");
+		scanf("%d", &livros[i].assunto);
+		printf("Estoque: ");
+		scanf("%d", &livros[i].estoque);
+		cont += livros[i].estoque;
+		i++;
+		if(cont > T){
+			printf("Estoque Cheio.\n\n");
+			return;
+		}
+		printf("\n");
+		printf("Codigo: ");
+		scanf("%d", &aux);
+	}
+}
+
+int main(){
+	tLivro livros[T];
+	int i,resp,cod;
+	
+	cadastrar_livros(&livros[0]);
+	printf("Deseja consultar um Livro(1-Sim 0-Nao): ");
+	scanf("%d", &resp);
+	while(resp != 0){
+		printf("Digite o Codigo do Livro: ");
+		scanf("%d", &cod);
+		i = consulta_livro(T,livros,cod);
+		if(i != -1){
+			printf("Livro Codigo: %d\n      Assunto: %d\n", livros[i].codigo,livros[i].assunto);
+			mostra_estoque(T,livros,cod);
+		}	
+		else
+			printf("Livro nao cadastrado.\n");
+		printf("\nDeseja consultar um Livro(1-Sim 0-Nao): ");
+		scanf("%d", &resp);
+	}
+	
+	return 0;
+}
