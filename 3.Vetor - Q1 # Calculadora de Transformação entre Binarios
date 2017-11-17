@@ -1,0 +1,123 @@
+#include <stdio.h>
+#include <math.h>
+
+int contaDigitos(int valor){
+	int conta=0;
+	
+	while(valor != 0){
+		conta++;
+        valor = valor / 10;
+	}
+	
+	return conta;
+}
+
+
+int verificaBinario(int valor,int quant_elemen,int *vet){
+	int i,divide_dez=0,verificador = 1;
+	
+	divide_dez = pow(10, quant_elemen-1);
+	for(i=0;i<quant_elemen;i++){
+		vet[i] = valor / divide_dez;
+		valor = valor % divide_dez;
+		divide_dez /= 10;
+		if(vet[i] != 1)
+			if(vet[i] != 0){
+				verificador = 0;
+				break;
+			}
+	}
+	
+	return verificador;	
+}
+
+
+int transformaDecimal(int *vet,int quant_elemen){
+	int decimal=0,j,i,multiplica;
+	
+	for(i=0,j=quant_elemen-1;i < quant_elemen;i++,j--){
+		multiplica = pow(2,i);
+		decimal += vet[j] * multiplica;
+	}
+	
+	return decimal;
+}
+
+
+int sinalMagnitude(int *vet, int quant_elemen){
+	int i,j,multiplica,decimal=0;
+	
+	if(vet[0] == 1){
+		for(i=0,j=quant_elemen-1;i < quant_elemen-1;i++,j--){
+			multiplica = pow(2,i);
+			decimal += vet[j] * multiplica;
+		}
+		decimal = decimal * -1;
+	}
+	
+	return decimal;	
+}
+
+
+int complementoDois(int *v, int quant_elemen){
+	int decimal=0,j,i,multiplica;
+	
+	//Faz complemento de 1
+	for(i=0;i < quant_elemen;i++){
+		if(v[i] == 1)
+			v[i] = 0;
+		else
+			v[i] = 1;
+	}
+	
+	//Soma +1 ao Complemento de 1
+	j = quant_elemen-1;
+	if(v[j] == 1){
+		while(v[j] != 0){
+			if(v[j-1] == 1){  
+				v[j-1] = 0;   
+				if(v[j] == 1)  
+					v[j] = 0;
+			}	
+			j -= 2;
+		}
+		v[j] = 1;
+	}	
+	else
+		v[j] += 1;
+	
+	//Transforma em decimal
+	for(i=0,j=quant_elemen-1;i < quant_elemen;i++,j--){
+		multiplica = pow(2,i);
+		decimal += v[j] * multiplica;
+	}
+	decimal = decimal * -1;
+	
+	return decimal;
+}
+
+int main(){
+	int valor,verificador,quant,decimal;
+	int vet[10];
+	
+	printf("Digite os bits: ");
+	scanf("%d", &valor);
+	
+	quant = contaDigitos(valor);
+	verificador = verificaBinario(valor,quant,vet);
+	while(verificador > 0){
+		printf("Valor decimal:\n");
+		decimal = transformaDecimal(vet,quant);
+		printf("Inteiro sem sinal: %d\n", decimal);
+		decimal = sinalMagnitude(vet,quant);
+		printf("Sinal e magnitude: %d\n", decimal);
+		decimal = complementoDois(vet,quant);
+		printf("Complemento de dois: %d\n", decimal);
+		printf("Digite os bits: ");
+	   	scanf("%d", &valor);
+	   	quant = contaDigitos(valor);
+		verificador = verificaBinario(valor,quant,vet);   	  		
+	}	
+	
+	return 0;
+}
