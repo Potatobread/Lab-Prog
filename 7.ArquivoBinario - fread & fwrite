@@ -1,0 +1,342 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <locale.h>
+#include <time.h>
+#define T 100
+
+typedef struct{
+	char nome[15];
+	char CPF[15];
+	int agencia;
+	int conta;
+	float saldo;
+}tCliente;
+
+void sleep(time_t delay){
+	time_t timer0, timer1;
+	
+	time(&timer0);
+	do{
+		time(&timer1);
+	}while((timer1-timer0)<delay);
+}
+
+void cadastrarCliente(tCliente* cliente, int *quant){  	
+	system("cls");
+	char nome[15],cpf[15];
+	int i,agen,conta,j = *quant,controle=0;
+	
+	printf("Nome do Cliente: ");
+	scanf(" %s", nome);
+	printf("CPF do Cliente: ");
+	scanf(" %s", cpf);
+	printf("Numero da Agencia: ");
+	scanf(" %d", &agen);
+	printf("Numero da Conta: ");
+	scanf(" %d", &conta);
+	for(i=0;i<T;i++){
+		if(agen == cliente[i].agencia){
+			if(conta == cliente[i].conta){
+				printf("\nCONTA JA CADASTRADA!\n");
+				sleep(2);
+	   			system("cls");
+				return;
+			}
+			else
+				controle++;
+		}
+		else
+			controle++;
+	}
+	if(controle != 0){
+		strcpy(cliente[j].nome,nome);
+		strcpy(cliente[j].CPF,cpf);
+		cliente[j].agencia = agen;
+		cliente[j].conta = conta;
+	}
+	printf("Saldo: ");
+	scanf(" %f", &cliente[j].saldo);
+	(*quant)++;
+	printf("\nCadastro Realizado.\n");
+	sleep(2);
+	system("cls");
+}
+
+void saldo(tCliente* cliente, int *quant){                           
+	int agen,conta,i,j = *quant,controle=0;
+	
+	printf("\nNumero da Conta: ");
+	scanf(" %d", &conta);
+	printf("Numero da Agencia: ");
+	scanf(" %d", &agen);
+	for(i=0;i<j;i++){
+		if(conta == cliente[i].conta){
+			if(agen == cliente[i].agencia){
+				printf("\nSaldo: %.2f\n\n", cliente[i].saldo);
+				return;
+			}
+			else
+				controle++;
+		}
+		else
+			controle++;
+	}
+	if(controle != 0)
+		printf("\nCONTA INVALIDA!\n\n");		
+}
+
+void deposito(tCliente* cliente, int *quant){
+	int agen,conta,i,j = *quant,controle=0;
+	float dep;
+	
+	printf("\nNumero da Conta: ");
+	scanf(" %d", &conta);
+	printf("Numero da Agencia: ");
+	scanf(" %d", &agen);
+	for(i=0;i<j;i++){
+		if(conta == cliente[i].conta){
+			if(agen == cliente[i].agencia){
+				printf("Valor do Deposito: ");
+				scanf(" %f", &dep);
+				if(dep < 0){
+					printf("Invalido. Digite novamente: ");
+					while(dep < 0){
+						scanf(" %f", &dep);
+						if(dep < 0)
+							printf("Invalido. Digite novamente: ");
+					}
+				}
+				cliente[i].saldo += dep;
+				printf("\nDeposito realizado com Sucesso!\n\n");
+				return;
+			}
+			else
+				controle++;
+		}
+		else
+			controle++;
+	}
+	if(controle != 0)
+		printf("\nCONTA INVALIDA!\n\n");
+}
+
+void saque(tCliente* cliente, int *quant){
+	int agen,conta,i,j = *quant,controle = 0;
+	float sacar;
+	
+	printf("\nNumero da Conta: ");
+	scanf(" %d", &conta);
+	printf("Numero da Agencia: ");
+	scanf(" %d", &agen);
+	for(i=0;i<j;i++){
+		if(conta == cliente[i].conta){
+			if(agen == cliente[i].agencia){
+				printf("Valor do Saque: ");
+				scanf(" %f", &sacar);
+				if(sacar < 0){
+					printf("Invalido. Digite novamente: ");
+					while(sacar < 0){
+						scanf(" %f", &sacar);
+						if(sacar < 0)
+							printf("Invalido. Digite novamente: ");
+					}
+				}
+				if(sacar > cliente[i].saldo){
+					printf("\nSALDO INSUFICIENTE!\n\n");
+					return;
+				}
+				else{
+					cliente[i].saldo -= sacar;
+					printf("\nSaque realizado com Sucesso!\n\n");
+					return;
+				}	
+			}
+			else
+				controle++;
+		}
+		else
+			controle++;
+	}
+	if(controle != 0)
+		printf("\nCONTA INVALIDA!\n\n");
+}
+
+void transferencia(tCliente* cliente){
+	int agen_origem,conta_origem,agen_destino,conta_destino,i,j,controle_orig = 0,control_dest = 0;
+	float transferir;
+	
+	printf("\nNumero da Conta de Origem: ");
+	scanf(" %d", &conta_origem);
+	printf("Numero da Agencia da Origem: ");
+	scanf(" %d", &agen_origem);
+	printf("\nNumero da Conta do Destino: ");
+	scanf(" %d", &conta_destino);
+	printf("Numero da Agencia do Destino: ");
+	scanf(" %d", &agen_destino);
+	
+	for(i=0;i<T;i++){
+		if(conta_origem == cliente[i].conta){
+			if(agen_origem == cliente[i].agencia){
+				for(j=0;j<T;j++){
+					if(cliente[j].conta == conta_destino){
+						if(cliente[j].agencia == agen_destino){
+							printf("Valor da Transferencia: ");
+							scanf(" %f", &transferir);
+							if(transferir < 0){
+								printf("Invalido. Digite novamente: ");
+								while(transferir < 0){
+									scanf(" %f", &transferir);
+									if(transferir < 0)
+										printf("Invalido. Digite novamente: ");
+								}
+							}
+							if(transferir > cliente[i].saldo){
+								printf("\nSALDO INSUFICIENTE!\n\n");
+								return;
+							}
+							else{
+								cliente[i].saldo -= transferir;
+								cliente[j].saldo += transferir;
+								printf("\nTransferencia realizada com Sucesso!\n\n");
+								return;
+							}	
+						}
+						else{
+							control_dest++;
+							controle_orig = 0;
+						}	
+					}
+					else{
+						control_dest++;
+						controle_orig = 0;
+					}	
+				}
+			}
+			else
+				controle_orig++;
+		}
+		else
+			controle_orig++;
+	}
+	if(control_dest != 0)
+		printf("\nCONTA DESTINO INVALIDA!\n\n");
+	else if(controle_orig != 0)
+		printf("\nCONTA ORIGEM INVALIDA!\n\n");
+}
+
+void buscar(tCliente* cliente, int *quant){
+	char cpf[15];
+	int i,j = *quant,controle=0;
+	
+	printf("\nDigite o CPF: ");
+	scanf(" %s", cpf);
+	for(i=0;i<j;i++){
+		if(strcmp(cpf,cliente[i].CPF)==0){
+			printf("Nome do Cliente: %s\n", cliente[i].nome);
+			printf("Agencia: %d\n", cliente[i].agencia);
+			printf("Conta: %d\n", cliente[i].conta);
+			printf("Saldo: %.2f\n\n", cliente[i].saldo);
+			return;
+		}
+		else
+			controle++;
+	}
+	if(controle != 0)
+		printf("\nCLIENTE NAO REGISTRADO\n\n");
+}
+
+void listar(tCliente* cliente, int *quant){
+	system("cls");
+	int i,j = *quant;
+	
+	printf("===============\n");
+	for(i=0;i<j;i++){
+		printf("Nome do Cliente: %s\n", cliente[i].nome);
+		printf("CPF: %s\n", cliente[i].CPF);
+		printf("Agencia: %d\n", cliente[i].agencia);
+		printf("Conta: %d\n", cliente[i].conta);
+		printf("Saldo: %.2f\n\n", cliente[i].saldo);
+	}
+	printf("===============\n");
+}
+
+void salvarArquivos(tCliente* cliente,int *quant){	
+	FILE* arquivo = fopen("contas.dat","wb");
+	
+	if(arquivo == NULL){
+		printf("Erro ao criar o Arquivo!\n");
+		exit(1);
+	}	
+	else{
+		fwrite(quant,sizeof(int),1,arquivo);
+		fwrite(cliente,sizeof(tCliente),T,arquivo);
+	}	
+					
+	fclose(arquivo);
+}
+	
+void carregarArquivos(tCliente* cliente, int *quant){
+	FILE* arquivo = fopen("contas.dat","rb");
+	
+	if(arquivo == NULL)
+		return;
+	else{
+		fread(quant,sizeof(int),1,arquivo);
+		fread(cliente,sizeof(tCliente),T,arquivo);
+	}	
+ 
+	fclose(arquivo);
+}
+
+void menu(tCliente* cliente, int *quant){
+	int resp;
+	
+	printf("MENU:\n");
+	printf("1 - Cadastrar cliente\n2 - Mostrar saldo\n3 - Deposito\n4 - Saque\n5 - Transferencia\n6 - Pesquisar pelo CPF\n7 - Listar\n0 - Sair\n");
+	scanf(" %d", &resp);
+	while(resp != -1){
+		switch(resp){
+			case 0:
+				salvarArquivos(cliente,quant);
+				exit(0);
+				break;
+			case 1:
+				cadastrarCliente(cliente,quant);
+				break;
+			case 2:
+				saldo(cliente,quant);
+				break;
+			case 3:
+				deposito(cliente,quant);
+				break;
+			case 4:
+				saque(cliente,quant);
+				break;
+			case 5:
+				transferencia(cliente);
+				break;
+			case 6:
+				buscar(cliente,quant);
+				break;
+			case 7:
+				listar(cliente,quant);
+				break;
+			default:
+				printf("Opcao Invalida!\n\n");
+				break;
+		};
+		printf("MENU:\n");
+		printf("1 - Cadastrar cliente\n2 - Mostrar saldo\n3 - Deposito\n4 - Saque\n5 - Transferencia\n6 - Pesquisar pelo CPF\n7 - Listar\n0 - Sair\n");
+		scanf(" %d", &resp);
+	}
+}
+
+int main(){
+	tCliente cliente[T];
+	int quant=0;
+	carregarArquivos(&cliente[0],&quant);
+	menu(&cliente[0],&quant);
+	
+	return 0;
+}
