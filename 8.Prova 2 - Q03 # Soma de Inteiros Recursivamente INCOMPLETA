@@ -1,0 +1,24 @@
+#include <stdio.h>
+
+int somarInteiros(int m, int n,int soma){
+	if(n != 0){
+		soma += m;
+		m++;
+		n--;
+		return somarInteiros(m,n,soma);
+	}
+	else
+		return soma;
+}
+
+int main(){
+	int m,n,soma=0;
+	
+	printf("Somar intervalo entre: ");
+	scanf("%d %d",&m,&n);
+	
+	soma = somarInteiros(m,n,soma);
+	printf("\nSoma: %d\n",soma);
+	
+	return 0;
+}
